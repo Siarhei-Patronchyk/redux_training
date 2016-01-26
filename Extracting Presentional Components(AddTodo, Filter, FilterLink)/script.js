@@ -46,6 +46,38 @@ const visibilityFilter = (
   }
 };
 
+const Todo = ({
+  onClick,
+  completed,
+  text
+}) => (
+  <li
+    onClick={onClick}
+    style={{
+      textDecoration:
+        completed ?
+          'line-through' :
+          'none'
+    }}>
+      {text}
+  </li>
+);
+
+const Todolist = ({
+  todos,
+  onTodoClick
+}) => (
+  <ul>
+    {todos.map(todo =>
+      <Todo
+        key={todo.id}
+        {...todo}
+        onClick={() => onTodoClick(todo.id)}
+        />
+    )}
+  </ul>
+);
+
 const { combineReducers } = Redux;
 
 const todoApp = combineReducers({
@@ -60,7 +92,7 @@ const { Component } = React;
 
 let nextTodoId = 0;
 class TodoApp extends Component {
-  render() {
+  render( {
     return (
       <div>
         <input ref={node => {
@@ -76,25 +108,9 @@ class TodoApp extends Component {
           }}>
           Add Todo
         </button>
-        <ul>
-          {this.props.todos.map(todo =>
-            <li key={todo.id}
-              onClick={ () => {
-                store.dispatch({
-                  type: 'TOGGLE_TODO',
-                  id: todo.id
-                });
-              }}
-              style={{
-                textDecoration:
-                  todo.completed ?
-                    'line-through' :
-                    'none'
-              }}>
-                {todo.text}
-            </li>
-          )}
-        </ul>
+        <TodoList
+          todos={visibleTodos}
+          />
       </div>
     );
   }
